@@ -1,0 +1,60 @@
+{% load static %}
+{% load thumbnail %}
+
+{% for image in images %}
+  <div class="card">
+    <div class="card-header">
+      <a href="{% url 'account:user_profile' image.user.username %}">
+        <img src="{{ image.user.get_avatar }}" class="avatar-40">
+        {{ image.user.first_name }}
+      </a>
+      <a href="#" class="float-right user-like" data-id="{{ image.id }}">
+        {{ image.user_like.count }} 個喜歡
+        {% if request.user in image.user_like.all %}
+          <img class="like-icon" src="{% static 'img/like.png' %}">
+        {% else %}
+          <img class="like-icon" src="{% static 'img/unlike.png' %}">
+        {% endif %}
+      </a>
+    </div>
+    {% thumbnail image.image "500x500" crop="center" as im %}
+      <img class="card-img-top" src="{{ im.url }}">
+    {% endthumbnail %}
+    <div class="card-body border-bottom">
+      <!-- <h5 class="card-title">{{ image.title }}</h5> -->
+      <div class="card-text">{{ image.description|linebreaks|slice:"50" }}</div>
+      <div class="card-text" style="display: none;">{{ image.description|linebreaks }}</div>
+      {% if image.description|length > 50 %}
+        <a href="#">...更多</a>
+      {% endif %}
+    </div>
+    <div class="comment">
+      <form action="">
+        <div class="row">
+          <div class="col">
+            <textarea name="" id="" class="form-control" placeholder="留言"></textarea>
+          </div>
+          <div class="col-auto">
+            <input type="submit" value="發布" class="btn btn-primary float-right">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endfor %}
+
+<div>
+  <ul>
+    {% if images.has_previous %}
+      <li>
+        <a href="?page={{ images.previous_page_number }}"> &larr; Newer images</a>
+      </li>
+    {% endif %}
+    {% if images.has_next %}
+      <li>
+        <a href="?page={{ images.next_page_number }}">Older images &rarr;</a>
+      </li>
+    {% endif %}    
+  </ul>
+</div>
+

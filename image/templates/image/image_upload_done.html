@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Post | {% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <h3>上傳成功</h3>
+    </div>
+    <div class="card-body">
+      <p>
+        您的發表已完成，回個人檔案
+        <a href="{% url 'account:user_profile' request.user.username %}">查看</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

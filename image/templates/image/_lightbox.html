@@ -1,0 +1,58 @@
+<section class="gallery-block grid-gallery">
+  <!-- <div class="heading">
+    <h2>貼文</h2>
+  </div> -->
+  <div class="row">
+    {% load thumbnail %}
+    {% for image in images %}
+      <div class="col-4 item">
+        <a class="lightbox" href="#" data-toggle="modal" data-target="#imageModal" data-id="{{ image.id }}">
+          {% thumbnail image.image "500x500" crop="center" as im %}
+            <img class="img-fluid image scale-on-hover" src="{{ im.url }}">
+          {% endthumbnail %}
+        </a>
+        <div style="display: none;" class="image-description">
+          {{ image.description|linebreaks }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="modal-img-host d-flex flex-wrap align-items-center">
+            <img class="modal-img">
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="modal-header d-flex flex-wrap align-items-center">
+            <span class="modal-user">
+              <img class="modal-avatar avatar-40">
+            </span>
+            <span>
+              <a href="#" class="user-like"></a>
+            </span>
+          </div>
+          <div class="modal-body  border-bottom"></div>
+          <div class="comment">
+            <form action="">
+              <div class="row">
+                <div class="col">
+                  <textarea name="" id="" class="form-control" placeholder="留言"></textarea>
+                </div>
+                <div class="col-auto">
+                  <input type="submit" value="發布" class="btn btn-primary float-right">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

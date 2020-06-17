@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Register | {% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <h3>歡迎</h3>
+    </div>
+    <div class="card-body">
+      <p>
+        帳號已註冊完成，請點此
+        <a href="{% url 'account:login' %}">登入</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

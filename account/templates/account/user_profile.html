@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}User | {% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-auto">
+      {% if request.user == user %}
+        <form id="avatar-change" action="." method="POST" enctype="multipart/form-data" style="display: none;">
+          {{ form }}
+          {% csrf_token %}
+        </form>
+        <a href="#" class="avatar-button">
+          <img class="avatar-120" src="{{ user.get_avatar }}">
+        </a>
+      {% else %}
+        <img class="avatar-120" src="{{ user.get_avatar }}">
+      {% endif %}
+    </div>
+    <div class="col">
+      <div class="row">
+        <div class="col">
+          <h3>
+            {{ user.first_name }}
+            {% if request.user == user %}
+              <a href="{% url 'account:user_edit' %}" class="btn btn-light">編輯</a>
+            {% else %}
+              {% if request.user not in user.followers.all %}
+                <a href="{% url 'account:user_follow' user.username %}" class="btn btn-primary">追蹤</a>
+              {% else %}
+                <a href="{% url 'account:user_unfollow' user.username %}" class="btn btn-light">取消</a>
+              {% endif %}
+            {% endif %}
+          </h3>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        {% with total_following=user.following.count total_followers=user.followers.count %}
+        <div class="col-auto">
+          <b>{{ user.images_created.count }}</b> 貼文
+        </div>
+          <div class="col-auto">
+            <b>{{ total_following }}</b> 追蹤中
+          </div>
+          <div class="col-auto">
+            <b>{{ total_followers }}</b> 追蹤者
+          </div>
+        {% endwith %}
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-auto">
+          {{ user.about|linebreaks }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+{% include 'image/_lightbox.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+{{ block.super }}
+  <script>
+    $('.lightbox').click(function() {
+      item = $(this)
+      id = item.attr('data-id')
+      data = {'id': id}
+      jQuery.get(
+        '{% url "image:get_image" %}',
+        data,
+        function(res) {
+          // 清除前一張圖片資訊
+          $('.modal-user').empty()
+          .append('<img src="' + res['avatar'] + '" class="avatar-40">')
+          .append(res['first_name'])
+          $('.modal-body').empty()
+
+          // 替換當前圖片資訊
+          $('.modal-img').attr({'src': res['image_url']})
+          $('.modal-body').html(item.parent().find('.image-description').html())
+
+          if(res['is_like']) {
+            $('.user-like').empty().text(res['like_count'] + ' 個喜歡 ').attr({'data-id': id})
+            .append('<img class="like-icon" src="{% static "img/like.png" %}">')
+          }
+          else {
+            $('.user-like').empty().text(res['like_count'] + ' 個喜歡 ').attr({'data-id': id})
+            .append('<img class="like-icon" src="{% static "img/unlike.png" %}">')
+          }
+        }
+      )
+    })
+
+    $('.user-like').click(function(e) {
+      e.preventDefault()
+      item = $(this)
+      id = item.attr('data-id')
+      data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
+      jQuery.post(
+        '{% url "image:image_like" %}',
+        data,
+        function(res) {
+          item.text(res['like_count'] + ' 個喜歡 ')
+          if(res['is_like']) {
+            item.append('<img class="like-icon" src="{% static "img/like.png" %}">')
+          }
+          else {
+            item.append('<img class="like-icon" src="{% static "img/unlike.png" %}">')
+          }
+        }
+      )
+    })
+
+
+    $('.avatar-button').click(function(e) {
+      e.preventDefault()
+      $('#id_avatar').click()
+    })
+
+
+    $('#id_avatar').change(function() {
+        if($(this).val() != '') {
+          $('#avatar-change').submit()
+        }
+    })
+  </script>
+{% endblock %}
