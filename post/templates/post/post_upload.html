@@ -12,7 +12,7 @@
         {{ form.as_p }}
         {% csrf_token %}
         <p>
-          <a href="{% url 'image:image_list'%}" class="btn btn-secondary">取消</a>
+          <a href="{% url 'post:post_list'%}" class="btn btn-secondary">取消</a>
           <input type="submit" class="btn btn-success" value="上傳">
         </p>
       </form>

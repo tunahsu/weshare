@@ -38,7 +38,7 @@
       <div class="row">
         {% with total_following=user.following.count total_followers=user.followers.count %}
         <div class="col-auto">
-          <b>{{ user.images_created.count }}</b> 貼文
+          <b>{{ user.posts_created.count }}</b> 貼文
         </div>
           <div class="col-auto">
             <b>{{ total_following }}</b> 追蹤中
@@ -57,7 +57,7 @@
     </div>
   </div>
   <hr>
-{% include 'image/_lightbox.html' %}
+{% include 'account/_lightbox.html' %}
 {% endblock %}
 
 {% block scripts %}
@@ -67,9 +67,10 @@
     $('.lightbox').click(function() {
       item = $(this)
       id = item.attr('data-id')
+      $('.comment-form').attr({'data-id': id})
       data = {'id': id}
       jQuery.get(
-        '{% url "image:get_image" %}',
+        '{% url "post:get_post" %}',
         data,
         function(res) {
           // 清除前一張圖片資訊
@@ -77,11 +78,14 @@
           .append('<img src="' + res['avatar'] + '" class="avatar-40">')
           .append(res['first_name'])
           $('.modal-body').empty()
+          $('.comment-form textarea').val('')
+
 
           // 替換當前圖片資訊
           $('.modal-img').attr({'src': res['image_url']})
-          $('.modal-body').html(item.parent().find('.image-description').html())
-
+          $('.modal-body').html(item.parent().find('.post-body').html())
+          
+          // 顯示讚數
           if(res['is_like']) {
             $('.user-like').empty().text(res['like_count'] + ' 個喜歡 ').attr({'data-id': id})
             .append('<img class="like-icon" src="{% static "img/like.png" %}">')
@@ -89,6 +93,27 @@
           else {
             $('.user-like').empty().text(res['like_count'] + ' 個喜歡 ').attr({'data-id': id})
             .append('<img class="like-icon" src="{% static "img/unlike.png" %}">')
+          }
+
+          // 顯示評論
+          $('.modal-body').append('<div class="comment-block"></div>')
+          for(i = 0; i < res['comments'].length; i++){
+            $('.comment-block').append(
+              '<div class="row">' +
+                '<div class="col-sm-auto">' +
+                  '<a href="' + res['comment_user_profiles'][i] + '">' +
+                    '<img src="' + res['comment_user_avatars'][i] + '" class="avatar-40">' +
+                  '</a>' +
+                '</div>' +
+                '<div class="col-sm">' +
+                  '<a href="' + res['comment_user_profiles'][i] + '">' +
+                    '<b>' + res['comment_user_names'][i] + ': </b>' +
+                  '</a>' +
+                  res['comments'][i] +
+                '</div>' +
+              '</div>' +
+              '<br>'
+            )
           }
         }
       )
@@ -100,7 +125,7 @@
       id = item.attr('data-id')
       data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
       jQuery.post(
-        '{% url "image:image_like" %}',
+        '{% url "post:post_like" %}',
         data,
         function(res) {
           item.text(res['like_count'] + ' 個喜歡 ')
@@ -125,6 +150,38 @@
         if($(this).val() != '') {
           $('#avatar-change').submit()
         }
+    })
+
+    $('.comment-form').on('submit', function(e) {
+      e.preventDefault()
+      item = $(this)
+      id = item.attr('data-id')
+      body = item.find('textarea').val()
+      data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}', 'body': body}
+      jQuery.post(
+        '{% url "post:comment" %}',
+        data,
+        function(res) {
+          $('.comment-block').append(
+            '<div class="row">' +
+                '<div class="col-sm-auto">' +
+                  '<a href="' + res['comment_user_profile'] + '">' +
+                    '<img src="' + res['comment_user_avatar'] + '" class="avatar-40">' +
+                  '</a>' +
+                '</div>' +
+                '<div class="col-sm">' +
+                  '<a href="' + res['comment_user_profile'] + '">' +
+                    '<b>' + res['comment_user_name'] + ': </b>' +
+                  '</a>' +
+                  res['comments'] +
+                '</div>' +
+              '</div>' +
+              '<br>'
+          )
+          $('.comment-block textarea').val('')
+          $('.modal-body').animate({scrollTop:$('.modal-body')[0].scrollHeight},'1000');
+        }
+      )
     })
   </script>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from account.forms import MyUserCreationForm, MyUserChangeForm, ChangeAvatarForm
 from account.models import Contact
-from image.models import Image
+from post.models import Post
 
 
 def register(request):
@@ -39,23 +39,23 @@ def user_profile(request, username):
     user = User.objects.get(username=username)
     form = ChangeAvatarForm()
     # recommend_users = get_recommend_users(request.user)
-    images = Image.objects.filter(user=user)
-    paginator = Paginator(images, 12)
+    posts = Post.objects.filter(user=user)
+    paginator = Paginator(posts, 12)
     page = request.GET.get('page')
     try:
-        images = paginator.page(page)
+        posts = paginator.page(page)
     except PageNotAnInteger:
         # If page is not an integer deliver the first page
-        images = paginator.page(1)
+        posts = paginator.page(1)
     except EmptyPage:
         # If page is out of range deliver last page of results
-        images = paginator.page(paginator.num_pages)
+        posts = paginator.page(paginator.num_pages)
     return render(
         request,
         'account/user_profile.html',
         {
             'user': user,
-            'images': images,
+            'posts': posts,
             'form': form
         }
     )

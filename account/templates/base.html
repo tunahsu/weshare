@@ -13,7 +13,7 @@
 <body>
   <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light border-bottom border-gray">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'image:image_list' %}">
+      <a class="navbar-brand" href="{% url 'post:post_list' %}">
         <img src="{% static 'img/LOGO.png' %}" width="150px">
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@
         <ul class="navbar-nav mr-auto">
           {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'image:image_upload' %}">發表</a>
+            <a class="nav-link" href="{% url 'post:post_upload' %}">發表</a>
           </li>
             <li class="nav-item">
               <a class="nav-link" href="#">探索</a>
