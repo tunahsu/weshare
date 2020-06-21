@@ -32,7 +32,7 @@
         {% for comment in post.comments.all|slice:":2" %}
           <div>
             <a href="{% url 'account:user_profile' comment.user.username %}">
-              <b>{{ comment.user.first_name }}: </b>
+              <b>{{ comment.user.first_name }} </b>
             </a>
             {{ comment.body }}
             <br>
