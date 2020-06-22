@@ -102,7 +102,7 @@
               '<div class="row">' +
                 '<div class="col-sm-auto">' +
                   '<a href="' + res['comment_user_profiles'][i] + '">' +
-                    '<img src="' + res['comment_user_avatars'][i] + '" class="avatar-40">' +
+                    '<img src="' + res['comment_user_avatars'][i] + '" class="avatar-30">' +
                   '</a>' +
                 '</div>' +
                 '<div class="col-sm">' +
@@ -111,8 +111,7 @@
                   '</a>' +
                   res['comments'][i] +
                 '</div>' +
-              '</div>' +
-              '<br>'
+              '</div>'
             )
           }
         }
@@ -166,7 +165,7 @@
             '<div class="row">' +
                 '<div class="col-sm-auto">' +
                   '<a href="' + res['comment_user_profile'] + '">' +
-                    '<img src="' + res['comment_user_avatar'] + '" class="avatar-40">' +
+                    '<img src="' + res['comment_user_avatar'] + '" class="avatar-30">' +
                   '</a>' +
                 '</div>' +
                 '<div class="col-sm">' +
@@ -175,10 +174,9 @@
                   '</a>' +
                   res['comments'] +
                 '</div>' +
-              '</div>' +
-              '<br>'
+              '</div>'
           )
-          $('.comment-block textarea').val('')
+          $('.comment-form textarea').val('')
           $('.modal-body').animate({scrollTop:$('.modal-body')[0].scrollHeight},'1000');
         }
       )

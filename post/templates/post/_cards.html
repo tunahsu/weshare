@@ -3,19 +3,23 @@
 
 {% for post in posts %}
   <div class="card">
-    <div class="card-header">
-      <a href="{% url 'account:user_profile' post.user.username %}">
-        <img src="{{ post.user.get_avatar }}" class="avatar-40">
-        {{ post.user.first_name }}
-      </a>
-      <a href="#" class="float-right user-like" data-id="{{ post.id }}">
-        {{ post.user_like.count }} 個喜歡
-        {% if request.user in post.user_like.all %}
-          <img class="like-icon" src="{% static 'img/like.png' %}">
-        {% else %}
-          <img class="like-icon" src="{% static 'img/unlike.png' %}">
-        {% endif %}
-      </a>
+    <div class="card-header d-flex flex-wrap align-items-center">
+      <span>
+        <a href="{% url 'account:user_profile' post.user.username %}">
+          <img src="{{ post.user.get_avatar }}" class="avatar-40">
+          {{ post.user.first_name }}
+        </a>
+      </span>
+      <span>
+        <a href="#" class="user-like" data-id="{{ post.id }}">
+          {{ post.user_like.count }} 個喜歡
+          {% if request.user in post.user_like.all %}
+            <img class="like-icon" src="{% static 'img/like.png' %}">
+          {% else %}
+            <img class="like-icon" src="{% static 'img/unlike.png' %}">
+          {% endif %}
+        </a>
+      </span>
     </div>
     {% thumbnail post.image "500x500" crop="center" as im %}
       <img class="card-img-top" src="{{ im.url }}">

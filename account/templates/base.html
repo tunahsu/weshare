@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="{% static 'css/grid-gallery.css' %}">
 </head>
 <body>
-  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light border-bottom border-gray">
+  <nav class="navbar fixed-top navbar-expand navbar-light bg-light border-bottom border-gray">
     <div class="container">
       <a class="navbar-brand" href="{% url 'post:post_list' %}">
         <img src="{% static 'img/LOGO.png' %}" width="150px">
@@ -20,21 +20,16 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-auto">
-          {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'post:post_upload' %}">發表</a>
-          </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">探索</a>
-            </li>
-          {% endif %}
-        </ul> 
         <ul class="navbar-nav ml-auto"> 
           {% if request.user.is_authenticated %}
             <li class="nav-item">
-              <a href="{% url 'account:user_profile' request.user.username %}" class="nav-link">
-                <img src="{{ request.user.get_avatar }}" class="avatar-30">
+              <a href="{% url 'post:post_list' %}" class="nav-link">
+                <img src="{% static 'img/home.png' %}" class="nav-icon">
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'post:post_upload' %}" class="nav-link">
+                <img src="{% static 'img/post.png' %}" class="nav-icon">
               </a>
             </li>
             <li class="nav-item dropdown">
@@ -55,6 +50,11 @@
                   <a href="{% url 'account:logout' %}" class="dropdown-item">登出</a>
                 </li>
               </ul>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'account:user_profile' request.user.username %}" class="nav-link">
+                <img src="{{ request.user.get_avatar }}" class="avatar-30">
+              </a>
             </li>
           {% else %}
             <li class="nav-item">
