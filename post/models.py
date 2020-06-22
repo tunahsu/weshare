@@ -13,7 +13,7 @@ class Post(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        related_name='post_created'
+        related_name='posts_created'
     )
     user_like = models.ManyToManyField(
         to=User,
