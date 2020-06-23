@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Post | {% endblock %}
+
+{% block content %}
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="modal-img-host d-flex flex-wrap align-items-center">
+            <img class="modal-img" src="{{ post.image.url }}">
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="modal-header d-flex flex-wrap align-items-center">
+            <span class="modal-user">
+              <img class="modal-avatar avatar-40" src="{{ post.user.get_avatar }}">
+              {{ post.user.first_name }}  
+            </span>
+            <span>
+              <a href="#" class="user-like" data-id="{{ post.id }}">
+                {{ post.user_like.count }} 個喜歡
+                {% if request.user in post.user_like.all %}
+                  <img class="card-icon like-icon" src="{% static 'img/like.png' %}">
+                {% else %}
+                  <img class="card-icon like-icon" src="{% static 'img/unlike.png' %}">
+                {% endif %}
+              </a>
+            </span>
+          </div>
+          <div class="modal-body  border-bottom">
+            {{ post.body|linebreaks }}
+            <div class="comment-block">
+              {% for comment in post.comments.all %}
+                <div class="row">
+                  <div class="col-sm-auto">
+                    <a href="{% url 'account:user_profile' comment.user.username %}">
+                      <img src="{{ comment.user.get_avatar }}" class="avatar-30">
+                    </a>
+                  </div>
+                  <div class="col-sm">
+                    <a href="{% url 'account:user_profile' comment.user.username %}">
+                      <b>{{ comment.user.first_name }}</b>
+                    </a>
+                    {{ comment.body }}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <form class="comment-form" action="" method="POST" data-id="{{ post.id }}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col">
+                <textarea name="body" class="form-control" placeholder="留言"></textarea>
+              </div>
+              <div class="col-auto">
+                <input type="submit" value="發布" class="btn btn-primary float-right">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+  <script>
+    // 喜歡按鈕切換
+    $('.user-like').click(function(e) {
+      e.preventDefault()
+      item = $(this)
+      id = item.attr('data-id')
+      data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
+      jQuery.post(
+        '{% url "post:post_like" %}',
+        data,
+        function(res) {
+          item.text(res['like_count'] + ' 個喜歡 ')
+          if(res['is_like']) {
+            item.append('<img class="card-icon" src="{% static "img/like.png" %}">')
+          }
+          else {
+            item.append('<img class="card-icon" src="{% static "img/unlike.png" %}">')
+          }
+        }
+      )
+    })
+
+    // 發表評論
+    $('.comment-form').on('submit', function(e) {
+      e.preventDefault()
+      item = $(this)
+      id = item.attr('data-id')
+      body = item.find('textarea').val()
+      data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}', 'body': body}
+      if(body != '') {
+        jQuery.post(
+          '{% url "post:comment" %}',
+          data,
+          function(res) {
+            $('.comment-block').append(
+              '<div class="row">' +
+                  '<div class="col-sm-auto">' +
+                    '<a href="' + res['comment_user_profile'] + '">' +
+                      '<img src="' + res['comment_user_avatar'] + '" class="avatar-30">' +
+                    '</a>' +
+                  '</div>' +
+                  '<div class="col-sm">' +
+                    '<a href="' + res['comment_user_profile'] + '">' +
+                      '<b>' + res['comment_user_name'] + ' </b>' +
+                    '</a>' +
+                    res['comments'] +
+                  '</div>' +
+                '</div>'
+            )
+            $('.comment-form textarea').val('')
+            $('.modal-body').animate({scrollTop:$('.modal-body')[0].scrollHeight},'1000');
+          }
+        )
+      }
+    })
+  </script>
+{% endblock %}

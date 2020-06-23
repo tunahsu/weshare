@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}404 | {% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <h3>此頁面不存在</h3>
+    </div>
+    <div class="card-body">
+      <p>
+        點此回
+        <a href="{% url 'post:post_list' %}">首頁</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

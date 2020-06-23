@@ -10,21 +10,22 @@
           {{ post.user.first_name }}
         </a>
       </span>
-      <span>
-        <a href="#" class="user-like" data-id="{{ post.id }}">
-          {{ post.user_like.count }} 個喜歡
-          {% if request.user in post.user_like.all %}
-            <img class="like-icon" src="{% static 'img/like.png' %}">
-          {% else %}
-            <img class="like-icon" src="{% static 'img/unlike.png' %}">
-          {% endif %}
-        </a>
-      </span>
     </div>
-    {% thumbnail post.image "500x500" crop="center" as im %}
+    {% thumbnail post.image "800x800" crop="center" as im %}
       <img class="card-img-top" src="{{ im.url }}">
     {% endthumbnail %}
     <div class="card-body border-bottom">
+      <a href="#" class="user-like" data-id="{{ post.id }}">
+        {{ post.user_like.count }} 個喜歡 
+        {% if request.user in post.user_like.all %}
+          <img class="card-icon like-icon" src="{% static 'img/like.png' %}">
+        {% else %}
+          <img class="card-icon like-icon" src="{% static 'img/unlike.png' %}">
+        {% endif %} 
+      </a>
+      <a href="{% url 'post:post_detail' post.id %}" class="">
+        <img class="card-icon" src="{% static 'img/comment.png' %}">
+      </a>
       <div class="card-text-1">
         {{ post.body|linebreaks|slice:"50" }}
         {% if post.body|length > 50 %}

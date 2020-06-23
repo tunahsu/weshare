@@ -70,6 +70,7 @@ a {
 .card {
     margin-bottom: 3em;
     width: 65%;
+    font-size: 14px;
 }
 
 .card-header {
@@ -77,9 +78,14 @@ a {
     justify-content: space-between;
 }
 
-.like-icon {
-    width: 20px;
-    height: 20px;
+.card-icon {
+    width: 25x;
+    height: 25px;
+    margin-left: .5em;
+}
+
+.card-text-1, .card-text-2 {
+    margin-top: 1em;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -94,6 +100,10 @@ a {
 
 .modal-content, .modal-content .row, .modal-content .row .col-md-7, .modal-content .col-md-5 {
     max-height: 600px;
+}
+
+.modal-content {
+    font-size: 15px;
 }
 
 .modal-header {
@@ -134,11 +144,11 @@ a {
     max-height: 600px;
 }
 
-.modal .row {
+.modal-content .row {
     margin: 0;
 }
 
-.modal .col-md-7 {
+.modal-content .col-md-7 {
     padding: 0;
     background: #000;
 }

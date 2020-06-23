@@ -17,6 +17,11 @@ urlpatterns = [
         name='post_list'
     ),
     path(
+        'post/detail/<int:id>/',
+        views.post_detail,
+        name='post_detail'
+    ),
+    path(
         'post/like/',
         views.post_like,
         name='post_like'

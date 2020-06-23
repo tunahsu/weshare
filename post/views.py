@@ -62,16 +62,16 @@ def post_list(request):
         }
     )
 
-# @login_required
-# def post_detail(request, id):
-#     post = Post.objects.get(id=id)
-#     return render(
-#         request,
-#         'post/post_detail.html',
-#         {
-#             'post': post
-#         }
-#     )
+@login_required
+def post_detail(request, id):
+    post = Post.objects.get(id=id)
+    return render(
+        request,
+        'post/post_detail.html',
+        {
+            'post': post
+        }
+    )
 
 @login_required
 def post_like(request):

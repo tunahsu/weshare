@@ -27,36 +27,39 @@
         function(res) {
           item.text(res['like_count'] + ' 個喜歡 ')
           if(res['is_like']) {
-            item.append('<img class="like-icon" src="{% static "img/like.png" %}">')
+            item.append('<img class="card-icon like-icon" src="{% static "img/like.png" %}">')
           }
           else {
-            item.append('<img class="like-icon" src="{% static "img/unlike.png" %}">')
+            item.append('<img class="card-icon like-icon" src="{% static "img/unlike.png" %}">')
           }
         }
       )
     })
 
+    // 發表評論
     $('.comment-form').on('submit', function(e) {
       e.preventDefault()
       item = $(this)
       id = item.attr('data-id')
       body = item.find('textarea').val()
       data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}', 'body': body}
-      jQuery.post(
-        '{% url "post:comment" %}',
-        data,
-        function(res) {
-          item.parent().find('.comment-block').append(
-            '<div>' +
-              '<a href="' + res['comment_user_profile'] + '">' +
-                '<b>' + res['comment_user_name'] + ' </b>' +
-              '</a>' +
-              res['comments'] +
-            '</div>'
-          )
-          item.find('textarea').val('')
-        }
-      )
+      if(body != '') {
+        jQuery.post(
+          '{% url "post:comment" %}',
+          data,
+          function(res) {
+            item.parent().find('.comment-block').append(
+              '<div>' +
+                '<a href="' + res['comment_user_profile'] + '">' +
+                  '<b>' + res['comment_user_name'] + ' </b>' +
+                '</a>' +
+                res['comments'] +
+              '</div>'
+            )
+            item.find('textarea').val('')
+          }
+        )
+      }
     })
 	</script>
 {% endblock %}

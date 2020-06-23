@@ -88,11 +88,11 @@
           // 顯示讚數
           if(res['is_like']) {
             $('.user-like').empty().text(res['like_count'] + ' 個喜歡 ').attr({'data-id': id})
-            .append('<img class="like-icon" src="{% static "img/like.png" %}">')
+            .append('<img class="card-icon" src="{% static "img/like.png" %}">')
           }
           else {
             $('.user-like').empty().text(res['like_count'] + ' 個喜歡 ').attr({'data-id': id})
-            .append('<img class="like-icon" src="{% static "img/unlike.png" %}">')
+            .append('<img class="card-icon" src="{% static "img/unlike.png" %}">')
           }
 
           // 顯示評論
@@ -118,6 +118,7 @@
       )
     })
 
+    // 喜歡按鈕切換
     $('.user-like').click(function(e) {
       e.preventDefault()
       item = $(this)
@@ -129,57 +130,58 @@
         function(res) {
           item.text(res['like_count'] + ' 個喜歡 ')
           if(res['is_like']) {
-            item.append('<img class="like-icon" src="{% static "img/like.png" %}">')
+            item.append('<img class="card-icon" src="{% static "img/like.png" %}">')
           }
           else {
-            item.append('<img class="like-icon" src="{% static "img/unlike.png" %}">')
+            item.append('<img class="card-icon" src="{% static "img/unlike.png" %}">')
           }
         }
       )
     })
 
-
+    // 用戶更換大頭貼
     $('.avatar-button').click(function(e) {
       e.preventDefault()
       $('#id_avatar').click()
     })
-
-
     $('#id_avatar').change(function() {
         if($(this).val() != '') {
           $('#avatar-change').submit()
         }
     })
 
+    // 發表評論
     $('.comment-form').on('submit', function(e) {
       e.preventDefault()
       item = $(this)
       id = item.attr('data-id')
       body = item.find('textarea').val()
       data = {'id': id, 'csrfmiddlewaretoken': '{{ csrf_token }}', 'body': body}
-      jQuery.post(
-        '{% url "post:comment" %}',
-        data,
-        function(res) {
-          $('.comment-block').append(
-            '<div class="row">' +
-                '<div class="col-sm-auto">' +
-                  '<a href="' + res['comment_user_profile'] + '">' +
-                    '<img src="' + res['comment_user_avatar'] + '" class="avatar-30">' +
-                  '</a>' +
-                '</div>' +
-                '<div class="col-sm">' +
-                  '<a href="' + res['comment_user_profile'] + '">' +
-                    '<b>' + res['comment_user_name'] + ' </b>' +
-                  '</a>' +
-                  res['comments'] +
-                '</div>' +
-              '</div>'
-          )
-          $('.comment-form textarea').val('')
-          $('.modal-body').animate({scrollTop:$('.modal-body')[0].scrollHeight},'1000');
-        }
-      )
+      if(body != '') {
+        jQuery.post(
+          '{% url "post:comment" %}',
+          data,
+          function(res) {
+            $('.comment-block').append(
+              '<div class="row">' +
+                  '<div class="col-sm-auto">' +
+                    '<a href="' + res['comment_user_profile'] + '">' +
+                      '<img src="' + res['comment_user_avatar'] + '" class="avatar-30">' +
+                    '</a>' +
+                  '</div>' +
+                  '<div class="col-sm">' +
+                    '<a href="' + res['comment_user_profile'] + '">' +
+                      '<b>' + res['comment_user_name'] + ' </b>' +
+                    '</a>' +
+                    res['comments'] +
+                  '</div>' +
+                '</div>'
+            )
+            $('.comment-form textarea').val('')
+            $('.modal-body').animate({scrollTop:$('.modal-body')[0].scrollHeight},'1000');
+          }
+        )
+      }
     })
   </script>
 {% endblock %}
